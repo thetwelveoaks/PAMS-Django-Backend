@@ -1,0 +1,118 @@
+{% extends 'home.base.html' %}
+
+{% block title %}Referral Appointment{% endblock %}
+{% block extrastyle %}
+<link rel="stylesheet" href="/static/css/bootstrap-datetimepicker.css">
+{% endblock %}
+
+{% block extrajs %}
+<script src="/static/js/moment-with-locales.js"></script>
+<script src="/static/js/bootstrap-datetimepicker.js"></script>
+<script>
+$(document).ready(function() {
+    var today = new Date();
+    var tmr = new Date(today);
+    tmr.setDate(today.getDate()+1);
+    $( "#{{ form.date.id_for_label }}" ).datetimepicker({format:"YYYY-MM-DD", minDate: tmr});
+  });
+</script>
+{% endblock %}
+{% block content %}
+<form role="form" method="post">
+{% csrf_token %}
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Referral Appointment
+            <small>for {{ patient.user.name }}</small>
+                <span class="pull-right">
+                    <button type="submit" class="btn btn-primary">Submit </button>
+                    <button type="reset" class="btn btn-warning" onclick="$('#error_msg').hide('fast');">Reset</button>
+                    <a href="/web/doctor/patient/" class="btn btn-danger">Cancel</a>
+                </span>
+        </h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        {% if error %}
+        <div class="panel panel-danger" id="error_msg">
+        <div class="panel-heading">Errors</div>
+        <div class="panel-body">
+        {{ error }}
+         </div>
+        </div>
+        {% endif %}
+        <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+             Appointment Information
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                            <div class="form-group">
+                                <label for="{{ form.date.id_for_label }}">Date</label>
+                                <input class="form-control required" id="{{ form.date.id_for_label }}" name="{{ form.date.html_name }}" value="{{ form.date.value|default_if_none:"" }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.treatmentType.id_for_label }}">Treatment Type</label>
+                               <select id="{{ form.treatmentType.id_for_label }}" name="{{ form.treatmentType.html_name }}" class="form-control required">
+                                  <option value="">------Please Select------</option>
+                                  {% for type in form.treatments %}
+                                  <option value="{{ type.id }}" {% ifequal type.id form.treatmentType.value|add:0 %}selected="selected"{% endifequal %}>{{ type }}</option>
+                                  {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.timeslot.id_for_label }}">Time Slot</label>
+                                    <select id="{{ form.timeslot.id_for_label }}" name="{{ form.timeslot.html_name }}" class="form-control required">
+                                  <option value="">------Please Select------</option>
+                                  {% for timeslot in form.timeslots %}
+                                  <option value="{{ timeslot.id }}" {% ifequal timeslot.id form.timeslot.value|add:0 %}selected="selected"{% endifequal %}>{{ timeslot.range }}</option>
+                                  {% endfor %}
+                                </select>
+                            </div>
+                    </div>
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+</div>
+<div class="col-lg-6">
+               <div class="panel panel-default">
+            <div class="panel-heading">
+             Doctor to Refer to
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                <div class="col-lg-12">
+                <div class="form-group">
+                    <label for="{{ form.doctor.id_for_label }}">Doctor</label>
+                    <select id="{{ form.doctor.id_for_label }}" name="{{ form.doctor.html_name }}" class="form-control required">
+                  <option value="">------Please Select------</option>
+                  {% for doctor in form.doctors %}
+                  {% ifnotequal doctor.id request.session.doctor_id %}
+                  <option value="{{ doctor.id }}" {% ifequal doctor.id form.doctor.value|add:0 %}selected="selected"{% endifequal %}>{{ doctor.user.name }}</option>
+                  {% endifnotequal %}
+                  {% endfor %}
+                </select>
+                </div>
+                </div>
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    </div>
+    <!-- /.col-lg-12 -->
+
+</div>
+</form>
+<!-- /.row -->
+{% endblock %}

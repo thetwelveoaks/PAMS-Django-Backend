@@ -1,0 +1,72 @@
+{% extends "home.base.html" %}
+
+{% block title %}History Records{% endblock %}
+
+{% block messages %}
+<li>
+<a href="#">
+    <div>
+        <strong>Records</strong>
+        <span class="pull-right text-muted">
+        <em>Now</em>
+    </span>
+    </div>
+    <div>{{ patient.user.name }} have <strong>{{ appointments|length }}</strong> history records</div>
+</a>
+</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+<div class="col-lg-12">
+<h1 class="page-header">History Records <small>of {{ patient.user.name }}</small>
+<span class="pull-right">
+<a href="/web/doctor/patient/" class="btn btn-primary">Back</a>
+</span>
+</h1>
+
+</div>
+</div>
+
+<div class="panel-body">
+    <ul class="chat">
+
+        {% for appointment in appointments %}
+        <li class="left clearfix">
+            <span class="chat-img pull-left">
+               <i class="fa fa-clock-o fa-fw"></i> {{ appointment.date }}
+            </span><br>
+
+            <div class="chat-body clearfix">
+                <div class="header">
+                    <strong class="primary-font">{{ appointment.treatmentType }}</strong>
+                </div>
+                <p>
+                Treated by Doctor {{ appointment.doctor.user.name }}
+                    {% if appointment.referrer %}
+                    <br>
+                    Referred by Doctor {{ appointment.referrer.user.name }}
+                    {% endif %}
+            </p>
+                <table class="table-hover table-striped table-condensed col-md-8">
+                <tr><td class="col-md-6">Age:</td>
+                <td class="col-md-6">{{ appointment.record.age }}</td></tr>
+
+                <tr><td>Height:</td>
+                <td>{{ appointment.record.height }} cm</td></tr>
+
+                <tr><td>Weight:</td>
+                <td>{{ appointment.record.weight }} kg</td></tr>
+
+                <tr><td>Medication:</td>
+                <td>{{ appointment.record.medication|linebreaksbr }}</td></tr>
+
+                </table>
+
+            </div>
+        </li>
+        {% endfor %}
+
+    </ul>
+</div>
+{% endblock %}

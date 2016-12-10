@@ -1,0 +1,54 @@
+{% extends "home.base.html" %}
+
+{% block title %}Current Appointments{% endblock %}
+
+{% block messages %}
+<li>
+<a href="#">
+    <div>
+        <strong>Appointments</strong>
+        <span class="pull-right text-muted">
+        <em>Now</em>
+    </span>
+    </div>
+    <div>You have <strong>{{ appointments|length }}</strong> appointments pending</div>
+</a>
+</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+<div class="col-lg-12">
+<h1 class="page-header">Current Appointments</h1>
+</div>
+</div>
+
+<div class="panel-body">
+    <ul class="chat">
+
+        {% for appointment in appointments %}
+        <li class="left clearfix">
+            <span class="chat-img pull-left">
+               <i class="fa fa-clock-o fa-fw"></i> {{ appointment.timeSlot }}
+            </span><br>
+        <small class="pull-right text-muted"><a href="/web/doctor/record/{{ appointment.id }}/" class="btn btn-primary">Commit</a></small>
+
+            <div class="chat-body clearfix">
+                <div class="header">
+                    <strong class="primary-font">{{ appointment.patient.user.name }}</strong>
+                    <small><a href="/web/doctor/patient/#p-{{ appointment.patient.id }}" class="label label-success">id: {{ appointment.patient.user.username }}</a></small>
+                </div>
+                <p>
+                    {{ appointment.treatmentType }}
+                    {% if appointment.referrer %}
+                    <br>
+                    Referred by Doctor {{ appointment.referrer.user.name }}
+                    {% endif %}
+                </p>
+            </div>
+        </li>
+        {% endfor %}
+
+    </ul>
+</div>
+{% endblock %}

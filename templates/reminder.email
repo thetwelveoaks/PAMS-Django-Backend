@@ -1,0 +1,8 @@
+Hi {{ name }},
+
+You have a upcoming appointment tomorrow. Here's our friendly reminder:
+{% autoescape off %}
+{{ message }}
+{% endautoescape %}
+Regards,
+{{ sender }}
